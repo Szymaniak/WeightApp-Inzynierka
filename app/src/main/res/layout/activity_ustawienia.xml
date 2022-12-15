@@ -1,0 +1,282 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Ustawienia">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/red"
+        android:minHeight="?actionBarSize"
+        android:theme="?actionBarTheme"
+        app:contentInsetStart="0dp">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            tools:context=".MainActivity">
+
+            <Button
+                android:id="@+id/buttonUstawienia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_weight="1"
+                android:text="⚙"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                app:cornerRadius="0sp"
+                android:onClick="Ustawienia">
+
+            </Button>
+            <Button
+                android:id="@+id/buttonHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:onClick="Home"
+                android:text="🏠"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                app:cornerRadius="0sp" />
+
+            <Button
+                android:id="@+id/buttonStatystyki"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_weight="1"
+                android:onClick="Statystyki"
+                android:text="📈"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                app:cornerRadius="0sp" />
+
+            <Button
+                android:id="@+id/buttonHistoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_weight="1"
+                android:onClick="Historia"
+                android:text="📅"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                app:cornerRadius="0sp" />
+
+            <Button
+                android:id="@+id/buttonDodaj"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="Dodaj"
+                android:layout_weight="1"
+                android:text="➕"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                app:cornerRadius="0sp">
+
+            </Button>
+
+
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="USTAWIENIA"
+        android:textSize="23dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:textAlignment="center"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WZROST: "
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:paddingLeft="20dp"
+            />
+        <TextView
+            android:textAlignment="textEnd"
+            android:paddingRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="150 cm"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:id="@+id/etSetHeight"
+            android:textStyle="bold"
+            android:windowSoftInputMode="stateHidden"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:textAlignment="center"
+            android:paddingLeft="20dp"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WAGA DOCELOWA: "
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
+
+            />
+        <TextView
+            android:textAlignment="textEnd"
+            android:paddingRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="70 kg"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:id="@+id/etSetTargetWeight"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:textAlignment="center"
+            android:paddingLeft="20dp"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DATA DOCELOWA: "
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
+
+            />
+        <TextView
+            android:textAlignment="textEnd"
+            android:paddingRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2022-12-31"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:id="@+id/etSetTargetDate"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:textAlignment="center"
+            android:paddingLeft="20dp"
+            android:layout_marginTop="13sp"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="USUŃ POMIARY WAGI: "
+            android:textSize="17dp"
+            android:textColor="@color/black"
+
+
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+        <Button
+            android:layout_marginRight="20dp"
+
+
+            android:paddingRight="20dp"
+
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="USUŃ"
+            android:textSize="15sp"
+            android:layout_gravity="right"
+            android:textColor="@color/white"
+            android:id="@+id/buttonResetWeightDatabase"
+            android:textStyle="bold"
+            android:onClick="deleteDatabase"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:textAlignment="center"
+            android:layout_marginTop="13sp"
+            android:paddingLeft="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="POBIERZ KOPIĘ DANYCH: "
+            android:textSize="17dp"
+            android:textColor="@color/black"
+
+
+
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+        <Button
+            android:layout_marginRight="20dp"
+
+
+            android:paddingRight="30dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="POBIERZ"
+            android:textSize="15sp"
+            android:layout_gravity="right"
+            android:textColor="@color/white"
+            android:id="@+id/buttonDownloadDatabase"
+            android:textStyle="bold"
+            android:onClick="downloadData"/>
+    </LinearLayout>
+
+
+
+
+
+
+</LinearLayout>

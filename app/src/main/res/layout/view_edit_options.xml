@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:maxWidth="150dp">
+
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="EDYTUJ"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:cornerRadius="0dp"
+        android:textColor="@color/white"
+        android:background="@null" />
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="USUŃ"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:cornerRadius="0dp"
+        android:textColor="@color/white" />
+    <Button
+        android:id="@+id/btnSetAsFirst"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="USTAW JAKO POCZĄTKOWE"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:cornerRadius="0dp"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

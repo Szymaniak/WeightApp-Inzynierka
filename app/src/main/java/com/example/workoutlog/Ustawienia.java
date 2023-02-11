@@ -3,21 +3,12 @@ package com.example.workoutlog;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -25,17 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import org.mozilla.universalchardet.Constants;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
@@ -196,42 +178,35 @@ public class Ustawienia extends AppCompatActivity {
     }
 
     public void deleteDatabase(View view) {
-        controllerDB.deleteWeightTable();
+        controllerDB.deleteDataFromWeightTable();
         //controllerDB.createWeightTable();
     }
 
     public void downloadData(View view) throws IOException {
-
-
         StringBuilder dataToDownload = new StringBuilder();
         String date, time, weight;
-
         Date now = new Date();
 
         dataToDownload.append("Notatnik Wagi kopia danych "+now);
         dataToDownload.append(System.getProperty("line.separator"));
-        dataToDownload.append("data;czas;waga");
+
+        dataToDownload.append("data,czas,waga");
         dataToDownload.append(System.getProperty("line.separator"));
 
-        for(int i = 0;i<controllerDB.wczytajWage().size();i++){
-            date = controllerDB.wczytajWage().get(i).getData();
-            time = controllerDB.wczytajWage().get(i).getTime();
-            weight = String.valueOf(controllerDB.wczytajWage().get(i).getWaga());
+        for(int i = 0; i<controllerDB.loadWeights().size(); i++){
+            date = controllerDB.loadWeights().get(i).getData();
+            time = controllerDB.loadWeights().get(i).getTime();
+            weight = String.valueOf(controllerDB.loadWeights().get(i).getWaga());
 
-            dataToDownload.append(date+";"+time+";"+weight);
+            dataToDownload.append(date+","+time+","+weight);
             dataToDownload.append(System.getProperty("line.separator"));
         }
-
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, (Serializable) dataToDownload);
         sendIntent.setType("text/plain");
         sendIntent.setPackage("com.google.android.apps.docs");
-        startActivity(Intent.createChooser(sendIntent, "Notatnik Wagi "+ now));
-
-
-
-
+        startActivity(sendIntent);
     }
 
     public void Statystyki(View view) {

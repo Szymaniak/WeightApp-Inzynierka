@@ -2,15 +2,12 @@ package com.example.workoutlog;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,26 +15,21 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Locale;
 
 
@@ -69,19 +61,19 @@ public class Wykresy extends AppCompatActivity {
 
         LoadDailyWeight(null);
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void renderData(ArrayList label, int setXAxisMaximum) {
-        LimitLine llXAxis = new LimitLine(10f, "Index 10");
+    /* LimitLine llXAxis = new LimitLine(10f, "Index 10");
         llXAxis.setLineWidth(4f);
         llXAxis.enableDashedLine(10f, 10f, 0f);
         llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
-
+        llXAxis.setTextSize(10f);*/
+        /*leftAxis.setDrawZeroLine(false);
+        leftAxis.setDrawLimitLinesBehindData(false);*/
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void renderData(ArrayList label, int setXAxisMaximum) {
         XAxis xAxis = mChart.getXAxis();
         xAxis.enableGridDashedLine(10f, 10f, 0f);
         xAxis.setAxisMaximum(setXAxisMaximum);
         xAxis.setAxisMinimum(0f);
-        xAxis.setDrawLimitLinesBehindData(true);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(label));
 
         Float llTargetWeight = Float.parseFloat(controllerDB.getData(2));
@@ -92,15 +84,10 @@ public class Wykresy extends AppCompatActivity {
         ll1.setTextSize(12f);
 
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.removeAllLimitLines();
         leftAxis.addLimitLine(ll1);
-
-        leftAxis.setAxisMaximum(Math.round(controllerDB.returnMaxWeight()/10)*10+20);
-
-        leftAxis.setAxisMinimum(Math.round(controllerDB.returnMinWeight()/10)*10-20);
         leftAxis.enableGridDashedLine(10f, 10f, 0f);
-        leftAxis.setDrawZeroLine(false);
-        leftAxis.setDrawLimitLinesBehindData(false);
+        leftAxis.setAxisMaximum(Math.round(controllerDB.returnMaxWeight()/10)*10+20);
+        leftAxis.setAxisMinimum(Math.round(controllerDB.returnMinWeight()/10)*10-20);
 
         mChart.getAxisRight().setEnabled(false);
     }
@@ -109,58 +96,42 @@ public class Wykresy extends AppCompatActivity {
     private void setDataDailyWeight()
     {
         ArrayList<Entry> values = new ArrayList<>();
-        for(int i =0;i<controllerDB.wczytajWage().size();i++){
-            Float weight = Float.valueOf(String.valueOf(controllerDB.wczytajWage().get(i).getWaga()));
+        for(int i = 0; i<controllerDB.loadWeights().size(); i++){
+            Float weight = Float.valueOf(String.valueOf(controllerDB.loadWeights().get(i).getWaga()));
             values.add(new Entry(i, weight));
         }
 
         ArrayList<String> label = new ArrayList<>();
-        for (int i = 0; i < controllerDB.wczytajWage().size(); i++){
-            LocalDate date = LocalDate.parse(controllerDB.wczytajWage().get(i).getData());
+        for (int i = 0; i < controllerDB.loadWeights().size(); i++){
+            LocalDate date = LocalDate.parse(controllerDB.loadWeights().get(i).getData());
             DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd.MM.yy");
             String formatDateTime = date.format(myFormatObj);
             label.add(formatDateTime);
         }
 
-        renderData(label, controllerDB.wczytajWage().size()-1);
+        renderData(label, controllerDB.loadWeights().size()-1);
         setData(values);
     }
     private void setData(ArrayList<Entry> values) {
         mChart.clear();
-
         LineDataSet set1;
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            mChart.getData().notifyDataChanged();
-            mChart.notifyDataSetChanged();
-        } else {
-            set1 = new LineDataSet(values, "Waga");
-            set1.setDrawIcons(false);
-            set1.enableDashedLine(10f, 0f, 0f);
-            set1.enableDashedHighlightLine(10f, 15f, 0f);
-
-            set1.setColor(Color.CYAN);
-            set1.setCircleColor(Color.CYAN);
-            set1.setLineWidth(2f);
-            set1.setCircleRadius(3f);
-            set1.setDrawCircleHole(false);
-            set1.setValueTextSize(9f);
-            set1.setDrawFilled(true);
-            set1.setFormLineWidth(1f);
-            set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
-            set1.setFormSize(15.f);
-
-
-            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-            dataSets.add(set1);
-            LineData data = new LineData(dataSets);
-            mChart.setData(data);
-        }
+        set1 = new LineDataSet(values, "Waga");
+        set1.setColor(Color.CYAN);
+        set1.setLineWidth(2f);
+        set1.setCircleColor(Color.CYAN);
+        set1.setCircleRadius(3f);
+        set1.setDrawCircleHole(false);
+        set1.setValueTextSize(9f);
+        set1.setDrawFilled(true);
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1);
+        LineData data = new LineData(dataSets);
+        mChart.setData(data);
     }
 
-
+//        set1.setFormLineWidth(1f);
+//        set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+//        set1.setFormSize(15.f);
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -169,7 +140,7 @@ public class Wykresy extends AppCompatActivity {
         btnTygodniowa.setBackgroundColor(btnTygodniowa.getContext().getResources().getColor(R.color.red));
         btnMiesieczna.setBackgroundColor(btnMiesieczna.getContext().getResources().getColor(R.color.red));
 
-        if(controllerDB.wczytajWage().size()>0){
+        if(controllerDB.loadWeights().size()>0){
             setDataDailyWeight();
         }
 
@@ -183,7 +154,7 @@ public class Wykresy extends AppCompatActivity {
         btnTygodniowa.setBackgroundColor(btnTygodniowa.getContext().getResources().getColor(R.color.red2));
         btnMiesieczna.setBackgroundColor(btnMiesieczna.getContext().getResources().getColor(R.color.red));
 
-        if(controllerDB.wczytajWage().size()>0){
+        if(controllerDB.loadWeights().size()>0){
             adapterArrayList.clear();
 
             String weightDiffStr = "",dateStr,timeStr, dateStrPlusOne ="";
@@ -193,24 +164,24 @@ public class Wykresy extends AppCompatActivity {
             Locale userLocale = new Locale("pl");
             WeekFields weekNumbering = WeekFields.of(userLocale);
 
-            for(int i = 0;i<controllerDB.wczytajWage().size();i++){
-                timeStr = controllerDB.wczytajWage().get(i).getTime();
-                int id = controllerDB.wczytajWage().get(i).getId();
+            for(int i = 0; i<controllerDB.loadWeights().size(); i++){
+                timeStr = controllerDB.loadWeights().get(i).getTime();
+                int id = controllerDB.loadWeights().get(i).getId();
 
-                dateStr = controllerDB.wczytajWage().get(i).getData();
+                dateStr = controllerDB.loadWeights().get(i).getData();
                 LocalDate date= LocalDate.parse(dateStr);
                 int weekOfYear = date.get(weekNumbering.weekOfWeekBasedYear());
 
-                if(i!=controllerDB.wczytajWage().size()-1){
-                    dateStrPlusOne = controllerDB.wczytajWage().get(i+1).getData();
+                if(i!=controllerDB.loadWeights().size()-1){
+                    dateStrPlusOne = controllerDB.loadWeights().get(i+1).getData();
                     LocalDate datePlusOne= LocalDate.parse(dateStrPlusOne);
                     weekOfYearPlusOne = datePlusOne.get(weekNumbering.weekOfWeekBasedYear());
                 }
 
-                sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.wczytajWage().get(i).getWaga()));
+                sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.loadWeights().get(i).getWaga()));
                 counterBd++;
 
-                if(i==controllerDB.wczytajWage().size()-1||weekOfYear!=weekOfYearPlusOne){
+                if(i==controllerDB.loadWeights().size()-1||weekOfYear!=weekOfYearPlusOne){
                     sumaBd = sumaBd.divide(BigDecimal.valueOf(counterBd),1, RoundingMode.HALF_UP);
 
                     if(adapterArrayList.size()>0){
@@ -272,7 +243,7 @@ public class Wykresy extends AppCompatActivity {
         btnTygodniowa.setBackgroundColor(btnTygodniowa.getContext().getResources().getColor(R.color.red));
         btnMiesieczna.setBackgroundColor(btnMiesieczna.getContext().getResources().getColor(R.color.red2));
 
-        if(controllerDB.wczytajWage().size()>0){
+        if(controllerDB.loadWeights().size()>0){
             adapterArrayList.clear();
             String weightDiffStr = "",dateStr,timeStr, dateStrPlusOne ="", month;
             BigDecimal sumaBd = new BigDecimal(0);
@@ -281,24 +252,24 @@ public class Wykresy extends AppCompatActivity {
             Locale userLocale = new Locale("pl");
             WeekFields weekNumbering = WeekFields.of(userLocale);
 
-            for(int i = 0;i<controllerDB.wczytajWage().size();i++){
-                timeStr = controllerDB.wczytajWage().get(i).getTime();
-                int id = controllerDB.wczytajWage().get(i).getId();
+            for(int i = 0; i<controllerDB.loadWeights().size(); i++){
+                timeStr = controllerDB.loadWeights().get(i).getTime();
+                int id = controllerDB.loadWeights().get(i).getId();
 
-                dateStr = controllerDB.wczytajWage().get(i).getData();
+                dateStr = controllerDB.loadWeights().get(i).getData();
                 LocalDate date = LocalDate.parse(dateStr);
                 int monthOfYear = date.getMonthValue();
 
-                if(i!=controllerDB.wczytajWage().size()-1){
-                    dateStrPlusOne = controllerDB.wczytajWage().get(i+1).getData();
+                if(i!=controllerDB.loadWeights().size()-1){
+                    dateStrPlusOne = controllerDB.loadWeights().get(i+1).getData();
                     LocalDate datePlusOne= LocalDate.parse(dateStrPlusOne);
                     monthOfYearPlusOne = datePlusOne.getMonthValue();
                 }
 
-                sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.wczytajWage().get(i).getWaga()));
+                sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.loadWeights().get(i).getWaga()));
                 counterBd++;
 
-                if(i==controllerDB.wczytajWage().size()-1||monthOfYear!=monthOfYearPlusOne){
+                if(i==controllerDB.loadWeights().size()-1||monthOfYear!=monthOfYearPlusOne){
                     sumaBd = sumaBd.divide(BigDecimal.valueOf(counterBd),1,RoundingMode.HALF_UP);
 
                     if(adapterArrayList.size()>0){

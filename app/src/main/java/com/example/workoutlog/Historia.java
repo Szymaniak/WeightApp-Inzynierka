@@ -8,22 +8,18 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -73,8 +69,9 @@ public class Historia extends AppCompatActivity {
 
 
         LoadDailyWeight(null);
+
         customAdapter = new ListViewAdapter(this, R.layout.adapter_historia, adapterArrayList);
-        listViewHistoria .setAdapter(customAdapter);
+        listViewHistoria.setAdapter(customAdapter);
 
         listViewHistoria.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -112,8 +109,8 @@ public class Historia extends AppCompatActivity {
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
 
         lp.copyFrom(builder.getWindow().getAttributes());
-        lp.width = 600;
-        lp.height = 500;
+        lp.width = 650;
+        lp.height = 700;
         lp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         builder.getWindow().setAttributes(lp);
 
@@ -153,24 +150,24 @@ public class Historia extends AppCompatActivity {
 
         adapterArrayList.clear();
         String weightStr,weightDiffStr,dateStr,timeStr;
-        for(int i =0;i<controllerDB.wczytajWage().size();i++){
-            weightStr = String.valueOf(controllerDB.wczytajWage().get(i).getWaga());
-            dateStr = controllerDB.wczytajWage().get(i).getData();
-            timeStr = controllerDB.wczytajWage().get(i).getTime();
-            int id = controllerDB.wczytajWage().get(i).getId();
+        for(int i = 0; i<controllerDB.loadWeights().size(); i++){
+            weightStr = String.valueOf(controllerDB.loadWeights().get(i).getWaga());
+            dateStr = controllerDB.loadWeights().get(i).getData();
+            timeStr = controllerDB.loadWeights().get(i).getTime();
+            int id = controllerDB.loadWeights().get(i).getId();
             if(i!=0){
-                weightDiffStr = obliczenia.difference(controllerDB.wczytajWage().get(i-1).getWaga(), controllerDB.wczytajWage().get(i).getWaga());
+                weightDiffStr = obliczenia.difference(controllerDB.loadWeights().get(i-1).getWaga(),
+                        controllerDB.loadWeights().get(i).getWaga());
             }
             else{
                 weightDiffStr = "";
             }
-
             AdaperRekord rekord = new AdaperRekord(id,weightStr,weightDiffStr,dateStr,timeStr);
             adapterArrayList.add(rekord);
 
         }
         Collections.reverse(adapterArrayList);
-        listViewHistoria .setAdapter(customAdapter);
+        listViewHistoria.setAdapter(customAdapter);
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void LoadWeeklyWeight(View view){
@@ -188,24 +185,24 @@ public class Historia extends AppCompatActivity {
         Locale userLocale = new Locale("pl");
         WeekFields weekNumbering = WeekFields.of(userLocale);
 
-        for(int i = 0;i<controllerDB.wczytajWage().size();i++){
-            timeStr = controllerDB.wczytajWage().get(i).getTime();
-            int id = controllerDB.wczytajWage().get(i).getId();
+        for(int i = 0; i<controllerDB.loadWeights().size(); i++){
+            timeStr = controllerDB.loadWeights().get(i).getTime();
+            int id = controllerDB.loadWeights().get(i).getId();
 
-            dateStr = controllerDB.wczytajWage().get(i).getData();
+            dateStr = controllerDB.loadWeights().get(i).getData();
             LocalDate date= LocalDate.parse(dateStr);
             int weekOfYear = date.get(weekNumbering.weekOfWeekBasedYear());
 
-            if(i!=controllerDB.wczytajWage().size()-1){
-                dateStrPlusOne = controllerDB.wczytajWage().get(i+1).getData();
+            if(i!=controllerDB.loadWeights().size()-1){
+                dateStrPlusOne = controllerDB.loadWeights().get(i+1).getData();
                 LocalDate datePlusOne= LocalDate.parse(dateStrPlusOne);
                 weekOfYearPlusOne = datePlusOne.get(weekNumbering.weekOfWeekBasedYear());
             }
 
-            sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.wczytajWage().get(i).getWaga()));
+            sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.loadWeights().get(i).getWaga()));
             counterBd++;
 
-            if(i==controllerDB.wczytajWage().size()-1||weekOfYear!=weekOfYearPlusOne){
+            if(i==controllerDB.loadWeights().size()-1||weekOfYear!=weekOfYearPlusOne){
                 sumaBd = sumaBd.divide(BigDecimal.valueOf(counterBd),1,RoundingMode.HALF_UP);
 
                 if(adapterArrayList.size()>0){
@@ -262,28 +259,29 @@ public class Historia extends AppCompatActivity {
         Locale userLocale = new Locale("pl");
         WeekFields weekNumbering = WeekFields.of(userLocale);
 
-        for(int i = 0;i<controllerDB.wczytajWage().size();i++){
-            timeStr = controllerDB.wczytajWage().get(i).getTime();
-            int id = controllerDB.wczytajWage().get(i).getId();
+        for(int i = 0; i<controllerDB.loadWeights().size(); i++){
+            timeStr = controllerDB.loadWeights().get(i).getTime();
+            int id = controllerDB.loadWeights().get(i).getId();
 
-            dateStr = controllerDB.wczytajWage().get(i).getData();
+            dateStr = controllerDB.loadWeights().get(i).getData();
             LocalDate date = LocalDate.parse(dateStr);
             int monthOfYear = date.getMonthValue();
 
-            if(i!=controllerDB.wczytajWage().size()-1){
-                dateStrPlusOne = controllerDB.wczytajWage().get(i+1).getData();
+            if(i!=controllerDB.loadWeights().size()-1){
+                dateStrPlusOne = controllerDB.loadWeights().get(i+1).getData();
                 LocalDate datePlusOne= LocalDate.parse(dateStrPlusOne);
                 monthOfYearPlusOne = datePlusOne.getMonthValue();
             }
 
-            sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.wczytajWage().get(i).getWaga()));
+            sumaBd = sumaBd.add(BigDecimal.valueOf(controllerDB.loadWeights().get(i).getWaga()));
             counterBd++;
 
-            if(i==controllerDB.wczytajWage().size()-1||monthOfYear!=monthOfYearPlusOne){
+            if(i==controllerDB.loadWeights().size()-1||monthOfYear!=monthOfYearPlusOne){
                 sumaBd = sumaBd.divide(BigDecimal.valueOf(counterBd),1,RoundingMode.HALF_UP);
 
                 if(adapterArrayList.size()>0){
-                    weightDiffStr=obliczenia.difference(Double.valueOf(adapterArrayList.get(adapterArrayList.size()-1).getWaga()), Double.parseDouble(String.valueOf(sumaBd)));
+                    weightDiffStr=obliczenia.difference(Double.valueOf(adapterArrayList.get(adapterArrayList.size()-1).getWaga()),
+                            Double.parseDouble(String.valueOf(sumaBd)));
                 }
                 month = Month.of(date.getMonthValue()).getDisplayName( TextStyle.FULL_STANDALONE , userLocale )+
                         " "+date.getYear();

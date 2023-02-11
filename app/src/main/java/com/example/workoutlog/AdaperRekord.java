@@ -18,7 +18,6 @@ public class AdaperRekord {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -26,7 +25,6 @@ public class AdaperRekord {
     public String getWaga() {
         return Waga;
     }
-
     public void setWaga(String waga) {
         Waga = waga;
     }
@@ -34,7 +32,6 @@ public class AdaperRekord {
     public String getData() {
         return Data;
     }
-
     public void setData(String data) {
         Data = data;
     }
@@ -42,7 +39,6 @@ public class AdaperRekord {
     public String getWagaRoznica() {
         return WagaRoznica;
     }
-
     public void setWagaRoznica(String wagaRoznica) {
         WagaRoznica = wagaRoznica;
     }
@@ -50,7 +46,6 @@ public class AdaperRekord {
     public String getTime() {
         return Time;
     }
-
     public void setTime(String time) {
         Time = time;
     }

@@ -156,24 +156,22 @@ public class Dodaj extends AppCompatActivity {
 
 
     public void Zapisz(View view) {
-
         LocalTime time = LocalTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("HH:mm:ss");
         String formatDateTime = time.format(myFormatObj);
 
-        if(extras == null)
-        {
-            if (wagaArrayList.size()==0)
-            {
+        if(extras == null) {
+            if (wagaArrayList.size()==0) {
                 controllerDB.updateUserData(jednosciInteger+"."+dziesietneInteger,"BWEIGHT");
                 controllerDB.updateUserData(String.valueOf(editTextData.getText()),"BDATE");
             }
-            controllerDB.addWeight(Double.valueOf(jednosciInteger+"."+dziesietneInteger) ,String.valueOf(editTextData.getText()) ,formatDateTime);
+            controllerDB.addWeight(Double.valueOf(jednosciInteger+"."+dziesietneInteger),
+                    String.valueOf(editTextData.getText()) ,formatDateTime);
             Home(null);
-        }
-        else
-        {
-            Rekord rekord = new Rekord(Integer.parseInt(weightIdExtra),Double.valueOf(jednosciInteger+"."+dziesietneInteger) ,String.valueOf(editTextData.getText()) ,formatDateTime);
+        } else {
+            Rekord rekord = new Rekord(Integer.parseInt(weightIdExtra),
+                    Double.valueOf(jednosciInteger+"."+dziesietneInteger),
+                    String.valueOf(editTextData.getText()) ,formatDateTime);
             controllerDB.updateWeight(rekord);
             Historia(null);
         }
@@ -182,7 +180,6 @@ public class Dodaj extends AppCompatActivity {
 
     public void datePicker(){
         int mYear, mMonth, mDay;
-        // Get Current Date
         final Calendar c = Calendar.getInstance();
 
         mYear = c.get(Calendar.YEAR);
@@ -208,9 +205,7 @@ public class Dodaj extends AppCompatActivity {
 
                     editTextData.setText(data);
 
-
                 }, mYear, mMonth, mDay);
-
 
         datePickerDialog.getDatePicker().setFirstDayOfWeek(Calendar.MONDAY);
         datePickerDialog.show();

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -22,7 +21,7 @@ public class ControllerDB extends SQLiteOpenHelper {
     private static final String WEIGHT = "weight";
     private static final String DATA = "data";
     private static final String TIME = "time";
-    private static final String TABLE_NAME2 = "dane";
+    private static final String TABLE_NAME2 = "data";
     private static final String HEIGHT = "height";
     private static final String TWEIGHT = "tweight";
     private static final String TDATE = "tdate";
@@ -39,14 +38,10 @@ public class ControllerDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d("test onCreate: ","test");
         createWeightTable(sqLiteDatabase);
-
     }
 
     public void createWeightTable(SQLiteDatabase sqLiteDatabase){
-        Log.d("test onCreate: ","test 2");
-
             String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ("
                     + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + WEIGHT + " DOUBLE(3,1),"
@@ -54,7 +49,6 @@ public class ControllerDB extends SQLiteOpenHelper {
                     + TIME + " TEXT)";
 
             sqLiteDatabase.execSQL(query);
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -71,12 +65,12 @@ public class ControllerDB extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(query);
 
-
         ContentValues values = new ContentValues();
 
         values.put(HEIGHT, "150");
 
         values.put(TWEIGHT, "75.0");
+
         ldt = java.time.LocalDate.now();
         values.put(TDATE, String.valueOf(ldt));
 
@@ -125,7 +119,7 @@ public class ControllerDB extends SQLiteOpenHelper {
 
     }
 
-    public void deleteDataTable(){
+    public void deleteDataFromDataTable(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_NAME2;
         sqLiteDatabase.execSQL(query);
@@ -138,23 +132,21 @@ public class ControllerDB extends SQLiteOpenHelper {
         return kursor.getString(i);
     }
 
-    public void deleteWeightTable(){
+    public void deleteDataFromWeightTable(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_NAME;
         sqLiteDatabase.execSQL(query);
     }
 
-    public void addWeight(Double weight, String data, String time) {
-
+    public void addWeight(Double weight, String date, String time) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(WEIGHT, weight);
-        values.put(DATA, data);
+        values.put(DATA, date);
         values.put(TIME, time);
 
         sqLiteDatabase.insert(TABLE_NAME, null, values);
-        //sqLiteDatabase.close();
     }
 
     public void removeWeight(int id) {
@@ -163,79 +155,59 @@ public class ControllerDB extends SQLiteOpenHelper {
         String query = "DELETE FROM " + TABLE_NAME + " WHERE id= "+id;
 
         sqLiteDatabase.execSQL(query);
-       // sqLiteDatabase.close();
     }
 
-    public ArrayList<Rekord> wczytajWage() {
-
+    public ArrayList<Rekord> loadWeights() {
         Cursor kursor;
         SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Rekord> weightsArrayList = new ArrayList<>();
 
         kursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + DATA + " ASC", null);
 
-
-        ArrayList<Rekord> wagaArrayList = new ArrayList<>();
-
         if (kursor.moveToFirst()) {
             do {
-                wagaArrayList.add(new Rekord(kursor.getInt(0),
+                weightsArrayList.add(new Rekord(kursor.getInt(0),
                         kursor.getDouble(1),
                         kursor.getString(2),
                         kursor.getString(3)));
             } while (kursor.moveToNext());
         }
         kursor.close();
-        return wagaArrayList;
+        return weightsArrayList;
     }
+
     public ArrayList<Rekord> wczytajOstatniaWage() {
-
         SQLiteDatabase db = this.getReadableDatabase();
-
         Cursor kursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-
-        ArrayList<Rekord> wagaArrayList = new ArrayList<>();
+        ArrayList<Rekord> weightsArrayList = new ArrayList<>();
 
         if (kursor.moveToLast()) {
-
-
-                wagaArrayList.add(new Rekord(kursor.getInt(0),
+                weightsArrayList.add(new Rekord(kursor.getInt(0),
                         kursor.getDouble(1),
                         kursor.getString(2),
                         kursor.getString(3)));
-
-
         }
         kursor.close();
-
-        return wagaArrayList;
-
+        return weightsArrayList;
     }
+
+
     public ArrayList<Rekord> getWeightById(int id) {
-
         SQLiteDatabase db = this.getReadableDatabase();
-
         Cursor kursor = db.rawQuery("SELECT * FROM " + TABLE_NAME+" WHERE id="+id , null);
-
         ArrayList<Rekord> wagaArrayList = new ArrayList<>();
 
         if (kursor.moveToLast()) {
-
-
-            wagaArrayList.add(new Rekord(kursor.getInt(0),
+           wagaArrayList.add(new Rekord(kursor.getInt(0),
                     kursor.getDouble(1),
                     kursor.getString(2),
                     kursor.getString(3)));
-
-
         }
         kursor.close();
-
         return wagaArrayList;
-
     }
 
     public void updateWeight(Rekord rekord){
-
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -245,9 +217,6 @@ public class ControllerDB extends SQLiteOpenHelper {
         contentValues.put(TIME, rekord.getTime());
 
         sqLiteDatabase.update(TABLE_NAME, contentValues, ID + " =? ", new String[]{String.valueOf(rekord.getId())});
-
-
-        //sqLiteDatabase.close();
     }
 
 
@@ -262,9 +231,7 @@ public class ControllerDB extends SQLiteOpenHelper {
         kursor = db.rawQuery("SELECT "+ WEIGHT +" FROM " + TABLE_NAME + " ORDER BY " + WEIGHT + " DESC LIMIT 1", null);
 
         kursor.moveToFirst();
-        Float maxWeight = kursor.getFloat(0);
-        kursor.close();
-        return maxWeight;
+        return kursor.getFloat(0);
     }
     public Float returnMinWeight(){
         Cursor kursor;
@@ -273,8 +240,6 @@ public class ControllerDB extends SQLiteOpenHelper {
         kursor = db.rawQuery("SELECT "+ WEIGHT +" FROM " + TABLE_NAME + " ORDER BY " + WEIGHT + " ASC LIMIT 1", null);
 
         kursor.moveToFirst();
-        Float minWeight = kursor.getFloat(0);
-        kursor.close();
-        return minWeight;
+        return kursor.getFloat(0);
     }
 }

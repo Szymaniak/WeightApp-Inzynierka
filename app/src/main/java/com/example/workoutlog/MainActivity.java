@@ -5,33 +5,21 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,32 +32,44 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewMonthlyWeightLost, textViewWeeklyWeightLost, textViewDailyWeightLost;
     TextView textViewCurrentBMI, textViewStartBMI,textViewDifferenceBMI, textViewCurrentBMIText, textViewBMILeft;
     SharedPreferences prefs = null;
+    LocalDate ldt;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ldt = java.time.LocalDate.now();
 
         controllerDB = new ControllerDB(this);
+        controllerDB.createDataTable();
         Obliczenia obliczenia = new Obliczenia();
         prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
         onResume();
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        if(controllerDB.wczytajWage().size()==0){
-            controllerDB.addWeight(90.0,"2022-11-04","17:12:12");
-            controllerDB.addWeight(93.6,"2022-11-07","17:12:12");
-            controllerDB.addWeight(92.2,"2022-11-11","17:12:12");
-            controllerDB.addWeight(95.8,"2022-11-14","17:12:12");
-            controllerDB.addWeight(99.5,"2022-11-19","17:12:12");
-            controllerDB.addWeight(89.1,"2022-11-21","17:12:12");
-            controllerDB.addWeight(91.0,"2022-11-27","17:12:12");
-            controllerDB.addWeight(95.9,"2022-12-04","17:12:12");
-            controllerDB.addWeight(92.9,"2022-12-09","17:12:12");
-            controllerDB.addWeight(94.0,"2022-12-12","17:12:12");
-            controllerDB.addWeight(91.0,"2022-12-16","17:12:12");
+        if(controllerDB.loadWeights().size()==0){
+            controllerDB.addWeight(80.0,"2023-02-28","17:12:12");
+            controllerDB.addWeight(83.6,"2023-02-27","17:12:12");
+            controllerDB.addWeight(82.2,"2023-02-26","17:12:12");
+            controllerDB.addWeight(85.8,"2023-02-24","17:12:12");
+            controllerDB.addWeight(89.5,"2023-02-19","17:12:12");
+            controllerDB.addWeight(89.1,"2023-02-11","17:12:12");
+            controllerDB.addWeight(81.0,"2023-02-02","17:12:12");
+            controllerDB.addWeight(90.9,"2023-01-24","17:12:12");
+            controllerDB.addWeight(92.9,"2023-01-19","17:12:12");
+            controllerDB.addWeight(94.0,"2023-01-12","17:12:12");
+            controllerDB.addWeight(91.0,"2023-01-06","17:12:12");
+            controllerDB.addWeight(92.2,"2023-01-01","17:12:12");
+            controllerDB.addWeight(95.8,"2022-12-24","17:12:12");
+            controllerDB.addWeight(99.5,"2022-12-19","17:12:12");
+            controllerDB.addWeight(99.1,"2022-12-11","17:12:12");
+            controllerDB.addWeight(101.0,"2022-12-07","17:12:12");
+            controllerDB.addWeight(105.9,"2022-11-30","17:12:12");
+            controllerDB.addWeight(102.9,"2022-11-29","17:12:12");
+            controllerDB.addWeight(104.0,"2022-11-22","17:12:12");
+            controllerDB.addWeight(101.0,"2022-11-16","17:12:12");
         }
 
 
@@ -93,12 +93,12 @@ public class MainActivity extends AppCompatActivity {
         textViewWeeklyWeightLost = findViewById(R.id.textViewWeeklyWeightLost);
         textViewMonthlyWeightLost = findViewById(R.id.textViewMonthlyWeightLost);
 
-        if(controllerDB.wczytajWage().size()>0) {
+        if(controllerDB.loadWeights().size()>0) {
             String bmiStartStr, bmiCurrentStr, bmiDifferencestr, difference;
 
-            bmiStartStr = obliczenia.BMI(controllerDB.getData(1),controllerDB.wczytajWage().get(0).getWaga());
+            bmiStartStr = obliczenia.BMI(controllerDB.getData(1),controllerDB.loadWeights().get(0).getWaga());
             bmiCurrentStr = obliczenia.BMI(controllerDB.getData(1),
-                    controllerDB.wczytajWage().get(controllerDB.wczytajWage().size()-1).getWaga());
+                    controllerDB.loadWeights().get(controllerDB.loadWeights().size()-1).getWaga());
             bmiDifferencestr = obliczenia.difference(Double.valueOf(bmiStartStr), Double.parseDouble(bmiCurrentStr));
 
             textViewStartBMI.setText(bmiStartStr);
@@ -125,25 +125,25 @@ public class MainActivity extends AppCompatActivity {
             else if(Double.parseDouble(bmiCurrentStr)>=40) textViewCurrentBMIText.setText(BMIText.get(7));
 
             difference = obliczenia.difference(Double.parseDouble(controllerDB.getData(4)),
-                    controllerDB.wczytajWage().get(controllerDB.wczytajWage().size()-1).getWaga());
+                    controllerDB.loadWeights().get(controllerDB.loadWeights().size()-1).getWaga());
 
-            textViewCurrentWeight.setText(controllerDB.wczytajWage().get(controllerDB.wczytajWage().size()-1).getWaga()+" kg");
+            textViewCurrentWeight.setText(controllerDB.loadWeights().get(controllerDB.loadWeights().size()-1).getWaga()+" kg");
             textViewStartWeight.setText(controllerDB.getData(4)+" kg");
             textViewTargetWeight.setText(controllerDB.getData(2)+" kg");
             textViewWeightDifference.setText(difference+" kg");
-            textViewWeightLeft.setText(obliczenia.difference(controllerDB.wczytajWage().get(controllerDB.wczytajWage().size()-1).getWaga(),
+            textViewWeightLeft.setText(obliczenia.difference(controllerDB.loadWeights().get(controllerDB.loadWeights().size()-1).getWaga(),
                     Double.valueOf(controllerDB.getData(2))).replaceAll("[-+]","")+" kg");
 
             textViewStartDate.setText(controllerDB.getData(5));
             textViewTargetDate.setText(controllerDB.getData(3));
-            long daysBetween = ChronoUnit.DAYS.between(LocalDate.parse(controllerDB.getData(5)),
+            long daysBetween = ChronoUnit.DAYS.between(ldt,
                     LocalDate.parse(controllerDB.getData(3)));
             textViewDaysLeft.setText(daysBetween+" dni");
 
             LocalDate firstDate, currentDate;
             long tempDifference;
             firstDate = LocalDate.parse(controllerDB.getData(5));
-            currentDate = LocalDate.parse(controllerDB.wczytajWage().get(controllerDB.wczytajWage().size()-1).getData());
+            currentDate = LocalDate.parse(controllerDB.loadWeights().get(controllerDB.loadWeights().size()-1).getData());
 
             tempDifference = ChronoUnit.DAYS.between(firstDate, currentDate);
             textViewDailyWeightLost.setText(averageWeightLoss(tempDifference, difference));
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public String averageWeightLoss(long time, String weight){
         BigDecimal bigDecimalWeight = BigDecimal.valueOf(Double.parseDouble(weight));
-        BigDecimal bigDecimalTime = BigDecimal.valueOf(time).add(BigDecimal.valueOf(1));
+        BigDecimal bigDecimalTime = BigDecimal.valueOf(time).add(BigDecimal.valueOf(2));
 
         bigDecimalWeight = bigDecimalWeight.divide(bigDecimalTime, 1, RoundingMode.HALF_UP);
 

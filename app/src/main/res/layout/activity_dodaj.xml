@@ -100,7 +100,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:orientation="vertical"
         android:layout_gravity="center|bottom">
     <TextView
@@ -183,9 +182,7 @@
                 android:layout_height="250dp"
                 android:layout_gravity="center"
                 android:layout_marginRight="4dp">
-
             </NumberPicker>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -193,14 +190,12 @@
                 android:text="."
                 android:textAlignment="center"
                 android:textSize="40dp" />
-
             <NumberPicker
                 android:id="@+id/npDziesietne"
                 android:layout_width="100dp"
                 android:layout_height="250dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="4dp">
-
             </NumberPicker>
         </LinearLayout>
 
